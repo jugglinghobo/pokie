@@ -1,7 +1,17 @@
 body {
   margin: 0;
   padding: 0;
-  width: 1000px;
+}
+
+header, .content {
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+h1, h2, h3, h4, h5 {
+  margin: 5px;
+  padding: 05px;
 }
 
 ul {
@@ -20,29 +30,25 @@ label {
   vertical-align: top;
 }
 
-header, .content {
-  width: 80%;
-  margin: 0 20%;
-}
-
 .column {
-  width: 49%;
   display: inline-block;
   vertical-align: top;
 }
 
+.column.left {
+  width: 50%;
+}
+
+.column.right {
+  width: 49%;
+}
+
 .load_configuration select {
-  width: 44%;
+  width: 45%;
 }
 
-.form input[type='text'] {
-  width: 240px;
-}
-
-.form textarea {
-  width: 240px;
-  height: 100px;
-  resize: none;
+.form textarea, input[type='text'] {
+  width: 80%;
 }
 
 .response pre {

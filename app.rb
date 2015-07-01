@@ -10,15 +10,22 @@ get '/' do
   erb :index
 end
 
-post '/' do
+get '/request' do
+  redirect '/'
+end
+post '/request' do
+  puts params
   @form = Form.new params
   @form.submit_request
   erb :index
 end
 
+get '/load_configuration' do
+  redirect '/'
+end
 post '/load_configuration' do
   @configuration = Configuration.find params[:name]
-  @form = Form.new configuration.form_attributes
+  @form = Form.new @configuration.form_attributes
   erb :index
 end
 
@@ -70,17 +77,19 @@ class Form
 end
 
 class APIRequest
+  USERNAME = 'pokie'
+  PASSWORD = '12345'
   attr_accessor :form
   def initialize(form)
     @form = form
   end
 
   def uri
-    URI.parse "#{form.host}#{form.endpoint}"
+    @uri ||= URI.parse "#{form.host}#{form.endpoint}"
   end
 
   def http
-    Net::HTTP.new uri.host, uri.port
+    @http ||= Net::HTTP.new uri.host, uri.port
   end
 
   def submit
@@ -90,8 +99,14 @@ end
 
 class GetRequest < APIRequest
   def request
+    puts "payload: #{form.payload}"
+    puts "encode_form: #{URI.encode_www_form(form.payload)}"
     uri.query = URI.encode_www_form form.payload
-    Net::HTTP::Get.new(uri.request_uri)
+    puts "query: #{uri.query}"
+    puts "request_uri: #{uri.request_uri}"
+    req = Net::HTTP::Get.new(uri.request_uri)
+    req.basic_auth(USERNAME, PASSWORD)
+    req
   end
 end
 
@@ -99,6 +114,7 @@ class PostRequest < APIRequest
   def request
     req = Net::HTTP::Post.new(uri.request_uri)
     req.body = form.payload.to_json
+    req.basic_auth(USERNAME, PASSWORD)
     req['Content-Type'] = 'application/json'
     req
   end
@@ -145,11 +161,33 @@ class Hash
   end
 end
 
+class Array
+  def pretty
+    JSON.pretty_generate self
+  end
+end
+
 CONFIGURATIONS = [
   Configuration.new(
     :name => "ping",
     :endpoint => "/api/v1/ping",
     :method => "GET"
+  ),
+  Configuration.new(
+    :name => "GET customer search",
+    :endpoint => "/api/v1/customers",
+    :method => "GET",
+    :payload => '{
+      "first_name": "Banana"
+    }'
+  ),
+  Configuration.new(
+    :name => "GET customer transactions",
+    :endpoint => "/api/v1/customers/1/transactions",
+    :method => "GET",
+    :payload => '{
+      "company_id": "1"
+    }'
   ),
   Configuration.new(
     :name => "POST transaction",

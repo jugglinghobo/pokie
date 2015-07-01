@@ -1,4 +1,4 @@
-<form class="form" action="/" method="post">
+<form class="form" id="request_form" action="/request" method="post">
   <ul>
     <li>
       <label for="host">Host:</label>
@@ -7,10 +7,6 @@
     <li>
       <label for="endpoint">Endpoint:</label>
       <input type="text" name="endpoint" value=<%=@form.endpoint%>>
-    </li>
-    <li>
-      <label for="payload">Payload:</label>
-      <code><textarea autosize type="text" name="payload"><%= @form.payload.pretty %></textarea></code>
     </li>
     <li>
       <label for="method">Method:</label>
@@ -32,7 +28,12 @@
       </span>
     </li>
     <li>
-      <input type="submit">
+      <label for="payload">Payload:</label>
+      <code><textarea autosize type="text" name="payload"><%= @form.payload.pretty %></textarea></code>
+    </li>
+    <li>
+      <label for="submit_form">
+      <input type="submit" value="Submit Request">
     </li>
   </ul>
 </form>
