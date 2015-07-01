@@ -1,30 +1,28 @@
 <form class="form" id="request_form" action="/request" method="post">
   <ul>
+    <input type="hidden" name="configuration_id" value="<%= @form.configuration.id %>">
+    <li>
+      <label for="configuration_name">Name:</label>
+      <input type="text" name="configuration_name" value="<%= @form.configuration %>">
+    </li>
+    <br \>
     <li>
       <label for="host">Host:</label>
-      <input type="text" name="host" value=<%=@form.host%>>
+      <input type="text" name="host" value="<%=@form.host %>">
     </li>
     <li>
       <label for="endpoint">Endpoint:</label>
-      <input type="text" name="endpoint" value=<%=@form.endpoint%>>
+      <input type="text" name="endpoint" value="<%=@form.endpoint%>">
     </li>
     <li>
       <label for="method">Method:</label>
       <span>
-        <span>
-          GET
-        </span>
-        <span>
-          <input type="radio" name="method" value="GET" <%= 'checked' if @form.get? %>>
-        </span>
+        <span>GET</span>
+        <span><input type="radio" name="method" value="GET" <%= 'checked' if @form.get? %>></span>
       </span>
       <span>
-        <span>
-          POST
-        </span>
-        <span>
-          <input type="radio" name="method" value="POST"<%= 'checked' if @form.post? %>>
-        </span>
+        <span>POST</span>
+        <span><input type="radio" name="method" value="POST" <%= 'checked' if @form.post? %>></span>
       </span>
     </li>
     <li>
@@ -32,8 +30,11 @@
       <code><textarea autosize type="text" name="payload"><%= @form.payload.pretty %></textarea></code>
     </li>
     <li>
-      <label for="submit_form">
-      <input type="submit" value="Submit Request">
+      <label for="submit_form"></label>
+      <div class="actions inline">
+        <input type="submit" class="inline" id="submit_form" value="Submit Request">
+        <input type="submit" class="inline float_right" id="save_configuration" value="Save Configuration" formaction="/save_configuration">
+      </div>
     </li>
   </ul>
 </form>

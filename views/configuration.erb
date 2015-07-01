@@ -1,13 +1,14 @@
-<form class="load_configuration" action="/load_configuration" method="post">
+<form class="load_configuration" action="/" method="get">
   <ul>
     <li>
       <span>
       <label for "configuration_select">Load Config:
       </span>
       <span>
-        <select name="name" id="configuration_select">
-          <% Configuration.all.each do |configuration| %>
-            <option <%= "selected" if @configuration && configuration.name == @configuration.name %>><%= configuration.name %></option>
+        <select name="configuration_id" id="configuration_select">
+          <option value=""></option>
+          <% @configurations.each do |configuration| %>
+            <option value=<%= configuration.id %> <%= "selected" if configuration == @configuration %>><%= configuration.name %></option>
           <% end %>
         </select>
         <input type="submit" value="load config">
