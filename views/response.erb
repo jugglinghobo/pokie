@@ -1,5 +1,5 @@
 <article class="response">
   <% if @form.response %>
-    <pre><%= JSON.parse(@form.response.body).pretty %></pre>
+    <pre><%= @form.response.pretty %></pre>
   <% end %>
 </article>

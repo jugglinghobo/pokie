@@ -1,0 +1,18 @@
+<form class="load_configuration" action="/load_configuration" method="post">
+  <ul>
+    <li>
+      <span>
+      <label for "configuration_select">Load Config:
+      </span>
+      <span>
+        <select name="name" id="configuration_select">
+          <% Configuration.all.each do |configuration| %>
+            <option <%= "selected" if @configuration && configuration.name == @configuration.name %>><%= configuration.name %></option>
+          <% end %>
+        </select>
+        <input type="submit" value="load config">
+      </span>
+    </li>
+  </ul>
+</form>
+

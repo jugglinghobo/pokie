@@ -12,8 +12,13 @@ end
 
 post '/' do
   @form = Form.new params
-  puts @form.payload.inspect
   @form.submit_request
+  erb :index
+end
+
+post '/load_configuration' do
+  @configuration = Configuration.find params[:name]
+  @form = Form.new configuration.form_attributes
   erb :index
 end
 
@@ -38,23 +43,19 @@ class Form
   end
 
   def payload=(payload)
-    puts "inspecing payload:"
-    puts payload.inspect
     @payload = YAML.load payload
-    puts "PAYLOAD:\n#{@payload}"
   end
 
   def submit_request
     case method
     when "GET"
-      @response = GetRequest.new(self).submit
-      return
+      response = GetRequest.new(self).submit
     when "POST"
-      @response = PostRequest.new(self).submit
-      return
+      response = PostRequest.new(self).submit
     else
       raise "Method nNot Supported"
     end
+    @response = JSON.parse response.body
   end
 
 
@@ -104,10 +105,37 @@ class PostRequest < APIRequest
 end
 
 class Configuration
-  attr_accessor :identifier
+  attr_accessor :name, :host, :endpoint, :payload, :method
 
-  def initialize(identifier)
-    @identifier = identifier
+  DEFAULTS = {
+    :host => "http://localhost:3000",
+    :endpoint => "/api/v1/ping",
+    :payload => "",
+    :method => "GET"
+  }
+
+  def self.all
+    CONFIGURATIONS
+  end
+
+  def self.find(name)
+    CONFIGURATIONS.find { |c| c.name == name }
+  end
+
+  def initialize(hash = {})
+    hash = DEFAULTS.merge hash
+    # initialize with default value if none passed
+    hash.each { |k, v| send("#{k}=", v) }
+  end
+
+  def form_attributes
+    attrs = {
+      :host => host,
+      :endpoint => endpoint,
+      :payload => payload,
+      :method => method
+    }
+    attrs
   end
 end
 
@@ -116,3 +144,42 @@ class Hash
     JSON.pretty_generate self
   end
 end
+
+CONFIGURATIONS = [
+  Configuration.new(
+    :name => "ping",
+    :endpoint => "/api/v1/ping",
+    :method => "GET"
+  ),
+  Configuration.new(
+    :name => "POST transaction",
+    :endpoint => "/api/v1/transactions",
+    :method => "POST",
+    :payload => '{
+      "customer_id": "1",
+      "point_of_sale_id": "1",
+      "sales_person": "Mr. ABC",
+      "number": "abc2",
+      "total_price": "25.25",
+      "relevant_price": "2.25",
+      "currency": "USD",
+      "transaction_type": "Type",
+      "transaction_date": "06.05.2015",
+      "company_id": "1",
+      "transaction_items": [
+        {
+          "article_id": "1",
+          "article_description": "Article",
+          "price": "25.25",
+          "discounted": "True"
+        },
+        {
+          "article_id": "2",
+          "article_description": "Article",
+          "price": "25.25",
+          "discounted": "True"
+        }
+      ]
+    }',
+  )
+]
