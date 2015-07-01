@@ -4,6 +4,7 @@ require 'net/http'
 require 'uri'
 require 'json'
 require 'yaml'
+require 'pry'
 
 get '/' do
   @form = Form.new
@@ -16,6 +17,7 @@ end
 post '/request' do
   @form = Form.new params
   @form.submit_request
+  binding.pry
   erb :index
 end
 
