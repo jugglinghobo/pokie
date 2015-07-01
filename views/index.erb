@@ -1,0 +1,9 @@
+<section class="left half">
+  <%= erb :form %>
+</section>
+
+<section class="right half">
+  <% if @api_request.response %>
+    <%= erb :response %>
+  <% end %>
+</section>

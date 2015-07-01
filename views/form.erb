@@ -1,0 +1,26 @@
+<form action="/" method="post">
+  <ul>
+    <li>
+      <label for="host">Host:</label>
+      <input type="text" name="host" value=<%=@api_request.host%>>
+    </li>
+    <li>
+      <label for="endpoint">Endpoint:</label>
+      <input type="text" name="endpoint" value=<%=@api_request.endpoint%>>
+    </li>
+    <li>
+      <label for="payload_string">Payload:</label>
+      <textarea type="text" name="payload_string"><%=@api_request.payload_string%></textarea>
+    </li>
+    <li>
+      <label for="method">Method:</label>
+      <select name="method">
+        <option value="GET" <%='selected' if @api_request.get?%>>GET</option>
+        <option value="POST" <%='selected' if @api_request.post?%>>POST</option>
+      </select>
+    </li>
+    <li>
+      <input type="submit">
+    </li>
+  </ul>
+</form>
