@@ -1,9 +1,8 @@
-<section class="left half">
+<section class="column left">
+  <h3>Request</h3>
   <%= erb :form %>
 </section>
-
-<section class="right half">
-  <% if @api_request.response %>
-    <%= erb :response %>
-  <% end %>
+<section class="column right">
+  <h3>Response</h3>
+  <%= erb :response %>
 </section>

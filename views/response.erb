@@ -1,3 +1,5 @@
 <article class="response">
-    <code><%= @api_request.response.body %></code>
+  <% if @form.response %>
+    <pre><%= JSON.parse(@form.response.body).pretty %></pre>
+  <% end %>
 </article>

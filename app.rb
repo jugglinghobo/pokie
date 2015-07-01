@@ -2,45 +2,61 @@ require 'rubygems'
 require 'sinatra'
 require 'net/http'
 require 'uri'
-require 'ostruct'
-require 'pp'
+require 'json'
+require 'yaml'
 
 get '/' do
-  @api_request = APIRequest.new
+  @form = Form.new
   erb :index
 end
 
 post '/' do
-  @api_request = APIRequest.new params
-  if @api_request.get?
-    @api_request.query = URI.encode_www_form(@api_request.payload_hash)
-    response = Net::HTTP.get_response @api_request.uri
-    puts response.body
-    @api_request.response = response
-  end
+  @form = Form.new params
+  puts @form.payload.inspect
+  @form.submit_request
   erb :index
 end
 
-class APIRequest
+class Form
 
-  attr_accessor :host, :endpoint, :method, :payload_string, :payload_hash, :response
+  attr_accessor :host, :endpoint, :payload, :method, :response
 
   def initialize(hash = {})
     hash.each { |k, v| send("#{k}=", v) }
   end
 
-  def uri
-    @uri ||= URI.parse "#{host}#{endpoint}"
+  def host
+    @host ||= "https://localhost:3000"
   end
 
-  def payload_string=(payload_string)
-    @payload_hash = convert_to_hash payload_string
-    @payload_string = payload_string
+  def endpoint
+    @endpoint ||= "/api/v1/"
   end
 
-  def query=(query)
-    uri.query = query
+  def payload
+    @payload ||= {}
   end
+
+  def payload=(payload)
+    puts "inspecing payload:"
+    puts payload.inspect
+    @payload = YAML.load payload
+    puts "PAYLOAD:\n#{@payload}"
+  end
+
+  def submit_request
+    case method
+    when "GET"
+      @response = GetRequest.new(self).submit
+      return
+    when "POST"
+      @response = PostRequest.new(self).submit
+      return
+    else
+      raise "Method nNot Supported"
+    end
+  end
+
 
   def get?
     method == 'GET'
@@ -50,13 +66,53 @@ class APIRequest
     method == 'POST'
   end
 
-  def convert_to_hash(payload_string)
-    hash = {}
-    payload_string.split('\n').each do |param|
-      key, value = param.split(': ')
-      hash[key.strip] = value.strip
-    end
-    hash
+end
+
+class APIRequest
+  attr_accessor :form
+  def initialize(form)
+    @form = form
   end
 
+  def uri
+    URI.parse "#{form.host}#{form.endpoint}"
+  end
+
+  def http
+    Net::HTTP.new uri.host, uri.port
+  end
+
+  def submit
+    http.request request
+  end
+end
+
+class GetRequest < APIRequest
+  def request
+    uri.query = URI.encode_www_form form.payload
+    Net::HTTP::Get.new(uri.request_uri)
+  end
+end
+
+class PostRequest < APIRequest
+  def request
+    req = Net::HTTP::Post.new(uri.request_uri)
+    req.body = form.payload.to_json
+    req['Content-Type'] = 'application/json'
+    req
+  end
+end
+
+class Configuration
+  attr_accessor :identifier
+
+  def initialize(identifier)
+    @identifier = identifier
+  end
+end
+
+class Hash
+  def pretty
+    JSON.pretty_generate self
+  end
 end

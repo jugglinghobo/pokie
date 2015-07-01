@@ -2,22 +2,34 @@
   <ul>
     <li>
       <label for="host">Host:</label>
-      <input type="text" name="host" value=<%=@api_request.host%>>
+      <input type="text" name="host" value=<%=@form.host%>>
     </li>
     <li>
       <label for="endpoint">Endpoint:</label>
-      <input type="text" name="endpoint" value=<%=@api_request.endpoint%>>
+      <input type="text" name="endpoint" value=<%=@form.endpoint%>>
     </li>
     <li>
-      <label for="payload_string">Payload:</label>
-      <textarea type="text" name="payload_string"><%=@api_request.payload_string%></textarea>
+      <label for="payload">Payload:</label>
+      <code><textarea autosize type="text" name="payload"><%= @form.payload.pretty %></textarea></code>
     </li>
     <li>
       <label for="method">Method:</label>
-      <select name="method">
-        <option value="GET" <%='selected' if @api_request.get?%>>GET</option>
-        <option value="POST" <%='selected' if @api_request.post?%>>POST</option>
-      </select>
+      <span>
+        <span>
+          GET
+        </span>
+        <span>
+          <input type="radio" name="method" value="GET" <%= 'checked' if @form.get? %>>
+        </span>
+      </span>
+      <span>
+        <span>
+          POST
+        </span>
+        <span>
+          <input type="radio" name="method" value="POST"<%= 'checked' if @form.post? %>>
+        </span>
+      </span>
     </li>
     <li>
       <input type="submit">
