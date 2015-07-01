@@ -14,7 +14,6 @@ get '/request' do
   redirect '/'
 end
 post '/request' do
-  puts params
   @form = Form.new params
   @form.submit_request
   erb :index
@@ -99,11 +98,7 @@ end
 
 class GetRequest < APIRequest
   def request
-    puts "payload: #{form.payload}"
-    puts "encode_form: #{URI.encode_www_form(form.payload)}"
     uri.query = URI.encode_www_form form.payload
-    puts "query: #{uri.query}"
-    puts "request_uri: #{uri.request_uri}"
     req = Net::HTTP::Get.new(uri.request_uri)
     req.basic_auth(USERNAME, PASSWORD)
     req
