@@ -10,7 +10,6 @@ class Form
   end
 
   def payload=(payload)
-    binding.pry
     @payload = JSON.parse payload
   end
 
