@@ -11,14 +11,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150706164749) do
+ActiveRecord::Schema.define(version: 20150708043118) do
 
   create_table "configurations", force: :cascade do |t|
-    t.string "name"
-    t.string "host",     default: "http://localhost:3000"
-    t.string "endpoint", default: "/api/"
-    t.string "method",   default: "GET"
-    t.text   "payload"
+    t.string  "name"
+    t.string  "host",         default: "http://localhost:3000"
+    t.string  "endpoint",     default: "/api/"
+    t.string  "method",       default: "GET"
+    t.text    "payload"
+    t.boolean "auth_enabled"
+    t.string  "auth_user"
+    t.string  "auth_pass"
   end
 
   create_table "vouchers", force: :cascade do |t|

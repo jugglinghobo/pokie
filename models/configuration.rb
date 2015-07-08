@@ -6,18 +6,9 @@ class Configuration < ActiveRecord::Base
     find_by_id(id) || new
   end
 
-  def to_s
-    name || ""
-  end
-
   def form_attributes
-    attrs = {
-      :configuration => self,
-      :host => host,
-      :endpoint => endpoint,
-      :payload => payload.to_json,
-      :method => method
-    }
+    attrs = attributes
+    attrs["payload"] = payload.to_json
     attrs
   end
 

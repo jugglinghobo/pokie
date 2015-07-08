@@ -14,11 +14,10 @@ require './models/patches'
 require './models/voucher'
 
 set :database, {adapter: "sqlite3", database: "dev.sqlite3"}
-
-def load_configurations
-  @configurations = Configuration.all
-  @configuration = Configuration.find_or_initialize params["configuration_id"]
-end
+set :auth_user, "test-api"
+set :auth_password, "test-api"
+set :blizzard_user, "pokie"
+set :blizzard_password, "12345"
 
 get '/' do
   load_configurations
@@ -36,15 +35,6 @@ post '/request' do
   erb :index
 end
 
-get '/load_configuration' do
-  redirect '/'
-end
-post '/load_configuration' do
-  load_configurations
-  @form = Form.new @configuration.form_attributes
-  erb :index
-end
-
 get '/save_configuration' do
   redirect '/'
 end
@@ -52,11 +42,11 @@ post '/save_configuration' do
   load_configurations
   @form = Form.new params
   @form.save
-  @configuration = @form.configuration
-  erb :index
+  redirect "/?configuration_id=#{@form.id}"
 end
 
 post '/vouchers' do
+  authorize!
   params = JSON.parse(request.body.read)
   @voucher = Voucher.new params
   if @voucher.save
@@ -67,3 +57,24 @@ post '/vouchers' do
   end
 end
 
+helpers do
+  def authorize!
+    return if authorized?
+    headers['WWW-Authenticate'] = 'Basic realm="Restricted Area"'
+    halt 401, "Not authorized"
+  end
+
+  def authorized?
+    @auth ||=  Rack::Auth::Basic::Request.new(request.env)
+    @auth.provided? and
+      @auth.basic? and
+      @auth.credentials and
+      @auth.credentials == [settings.auth_user, settings.auth_password]
+  end
+
+  def load_configurations
+    @configurations = Configuration.all
+    @configuration = Configuration.find_or_initialize params["configuration_id"]
+  end
+
+end

@@ -1,5 +1,6 @@
 class Form
-  attr_accessor :configuration, :configuration_name, :host, :endpoint, :method, :payload, :response
+  attr_accessor :id, :name, :host, :endpoint, :method, :auth_enabled, :auth_user, :auth_pass, :payload, :response
+  alias_method :auth_enabled?, :auth_enabled
 
   def initialize(hash = {})
     hash.each { |k, v| send("#{k}=", v) }
@@ -13,16 +14,20 @@ class Form
     @payload || {}
   end
 
-  def configuration_id=(id)
-    @configuration = Configuration.find_or_initialize id
+  def auth_enabled=(enabled)
+    @auth_enabled = true if enabled
   end
 
   def save
+    configuration = Configuration.find_or_initialize id
     configuration.update_attributes(
-      :name => configuration_name,
+      :name => name,
       :host => host,
       :endpoint => endpoint,
       :method => method,
+      :auth_enabled => auth_enabled,
+      :auth_user => auth_user,
+      :auth_pass => auth_pass,
       :payload => payload
     )
   end
@@ -36,7 +41,11 @@ class Form
     else
       raise "Method Not Supported"
     end
-    @response = JSON.parse response.body
+    begin
+      @response = JSON.parse response.body
+    rescue JSON::ParserError
+      @response = {:error => response.body}
+    end
   end
 
   def get?

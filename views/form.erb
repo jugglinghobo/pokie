@@ -1,9 +1,9 @@
 <form class="form" id="request_form" action="/request" method="post">
   <ul>
-    <input type="hidden" name="configuration_id" value="<%= @form.configuration.id %>">
+    <input type="hidden" name="id" value="<%= @form.id %>">
     <li>
-      <label for="configuration_name">Name:</label>
-      <input type="text" name="configuration_name" value="<%= @form.configuration %>">
+      <label for="name">Name:</label>
+      <input type="text" name="name" value="<%= @form.name %>">
     </li>
     <br \>
     <li>
@@ -24,6 +24,18 @@
         <span>POST</span>
         <span><input type="radio" name="method" value="POST" <%= 'checked' if @form.post? %>></span>
       </span>
+    </li>
+    <li>
+      <label>Enable Auth?</label>
+      <input type="checkbox", name="auth_enabled" value="<%= @form.auth_enabled? %>" <%= 'checked' if @form.auth_enabled? %>>
+    </li>
+    <li>
+      <label>Auth name:</label>
+      <input type="text", name="auth_user" value="<%= @form.auth_user %>">
+    </li>
+    <li>
+      <label>Auth pass:</label>
+      <input type="text", name="auth_pass" value="<%= @form.auth_pass %>">
     </li>
     <li>
       <label for="payload">Payload:</label>
