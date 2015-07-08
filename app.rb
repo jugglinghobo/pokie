@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'sinatra'
+require 'sinatra/json'
 require 'net/http'
 require 'uri'
 require 'json'
@@ -10,9 +11,9 @@ require './models/form'
 require './models/configuration'
 require './models/request'
 require './models/patches'
+require './models/voucher'
 
 set :database, {adapter: "sqlite3", database: "dev.sqlite3"}
-set :show_exceptions, true
 
 def load_configurations
   @configurations = Configuration.all
@@ -53,5 +54,16 @@ post '/save_configuration' do
   @form.save
   @configuration = @form.configuration
   erb :index
+end
+
+post '/vouchers' do
+  params = JSON.parse(request.body.read)
+  @voucher = Voucher.new params
+  if @voucher.save
+    json @voucher
+  else
+    status 422
+    json @voucher.errors.to_json
+  end
 end
 

@@ -5,12 +5,12 @@ class Form
     hash.each { |k, v| send("#{k}=", v) }
   end
 
-  def payload
-    @payload ||= {}
+  def payload=(payload)
+    @payload = JSON.parse(payload)
   end
 
-  def payload=(payload)
-    @payload = JSON.parse payload
+  def payload
+    @payload || {}
   end
 
   def configuration_id=(id)
