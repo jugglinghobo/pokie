@@ -51,7 +51,6 @@ post '/vouchers' do
   params = JSON.parse(request.body.read)
   @voucher = Voucher.new params
   if @voucher.save
-    binding.pry
     json @voucher
   else
     status 422
