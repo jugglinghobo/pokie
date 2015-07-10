@@ -7,17 +7,17 @@ require 'json'
 require 'pry'
 require 'sinatra/activerecord'
 
+set :database, {adapter: "sqlite3", database: "dev.sqlite3"}
+set :auth_user, "test-api"
+set :auth_password, "test-api"
+
+require './db/db'
 require './models/form'
 require './models/configuration'
 require './models/request'
 require './models/patches'
 require './models/voucher'
 
-set :database, {adapter: "sqlite3", database: "dev.sqlite3"}
-set :auth_user, "test-api"
-set :auth_password, "test-api"
-set :blizzard_user, "pokie"
-set :blizzard_password, "12345"
 
 get '/' do
   load_configurations
