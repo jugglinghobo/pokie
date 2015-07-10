@@ -61,17 +61,20 @@ class Form
     method == "POST"
   end
 
-  def validate!
+  def validate!(options = {})
     validated_attributes.each do |attr, value|
       if value.empty?
         errors[attr] = "must be present"
       end
     end
+    if options[:include_name]
+      errors[:name] = "must be present" if name.empty?
+    end
     errors.empty?
   end
 
-  def valid?
-    validate!
+  def valid?(options = {})
+    validate!(options)
     errors.empty?
   end
 

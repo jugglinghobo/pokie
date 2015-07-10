@@ -9,8 +9,6 @@
   method: GET
   payload:
     a: b
-    c: d
-    dani: RADI
   errors: {}
   id: 18
 - !ruby/object:Configuration
@@ -23,8 +21,8 @@
   method: POST
   payload:
     customer_id: 1
-    company_id: 1
-    amount: 123.45
-    currency: CHF
+    company_id: 2
+    amount: 123.31
+    currency: USD
   errors: {}
-  id: 19
+  id: 25

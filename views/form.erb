@@ -1,10 +1,16 @@
 <form class="form" id="request_form" action="/request" method="post">
   <ul>
     <input type="hidden" name="id" value="<%= @form.id %>">
-    <li>
+    <li class="<%= "error" if @form.errors[:name] %>">
       <label for="name">Name:</label>
       <input type="text" name="name" value="<%= @form.name %>">
     </li>
+    <% if error = @form.errors[:name] %>
+      <li class="error">
+        <label></label>
+        <%= error %>
+      </li>
+    <% end %>
     <br \>
     <li class="<%= "error" if @form.errors[:host] %>">
       <label for="host">Host:</label>
@@ -62,8 +68,17 @@
     <li>
       <label for="submit_form"></label>
       <div class="actions inline">
-        <input type="submit" class="inline" id="submit_form" value="Submit Request">
-        <input type="submit" class="inline float_right" id="save_configuration" value="Save Configuration" formaction="/save_configuration">
+        <div class="button_row">
+          <div class="button">
+            <input type="submit" class="inline" id="submit_form" value="submit request">
+          </div>
+          <div class="button">
+            <input type="submit" class="inline" id="save_configuration" value="save config" formaction="/save_configuration">
+          </div>
+          <div class="button">
+            <input type="submit" class="inline" value="destroy config" formaction="/destroy_configuration">
+          </div>
+        </div>
       </div>
     </li>
   </ul>

@@ -44,8 +44,24 @@ end
 post '/save_configuration' do
   load_configurations
   @form = Form.new params
-  @form.save
-  redirect "/?id=#{@form.id}"
+  if @form.valid?(:include_name => true)
+    @form.save
+    redirect "/?id=#{@form.id}"
+  else
+    erb :index
+  end
+end
+
+get '/destroy_configuration' do
+  redirect '/'
+end
+
+post '/destroy_configuration' do
+  load_configurations
+  @configuration.destroy
+  @configuration = Configuration.new
+  @form = Form.new @configuration.form_attributes
+  redirect '/'
 end
 
 post '/vouchers' do

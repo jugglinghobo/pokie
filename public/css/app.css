@@ -29,6 +29,19 @@ ul li.error {
   background-color: #FFBABA;
 }
 
+ul li .actions {
+  display: table;
+}
+
+ul li .actions .button_row {
+  display: table-row;
+}
+
+ul li .actions .button_row .button {
+  display: table-cell;
+  width: 100%;
+}
+
 label {
   display: inline-block;
   width: 100px;
