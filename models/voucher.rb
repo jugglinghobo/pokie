@@ -1,19 +1,31 @@
 class Voucher
-  attr_accessor :id, :customer_id, :company_id, :amount, :currency, :number, :status, :created_at, :updated_at
+  ATTRIBUTES = [:id, :customer_id, :company_id, :amount, :currency, :number, :status, :created_at, :updated_at]
+
+  attr_accessor *ATTRIBUTES
+  attr_accessor :errors
+
 
   def initialize(attr = {})
-    attr.reverse_merge defaults
-    attr.each { |k, v| send("##{k}=", v) }
+    attr.merge! defaults # specifically override with defaults
+    attr.each { |k, v| send("#{k}=", v) }
+    @errors = {}
   end
 
   def save
     validate!
   end
 
+  def as_json(options = {})
+    attributes.inject({}) do |hash, attr|
+      hash[attr] = self.send(attr)
+      hash
+    end
+  end
+
   private
   def defaults
     {
-      :id         => next_id,
+      :id         => DB.for_voucher,
       :number     => generate_number,
       :status     => "generated",
       :created_at => Time.now,
@@ -21,12 +33,22 @@ class Voucher
     }
   end
 
-  def next_id
-    ID.for_voucher
+  def validate!
+    attributes.each do |attr|
+      if self.send(attr).nil?
+        errors[attr] = "must be present"
+        return false
+      end
+    end
+    errors.empty?
   end
 
   def generate_number
     self.number ||= ('a'..'z').to_a.shuffle[0,8].join.upcase
+  end
+
+  def attributes
+    ATTRIBUTES
   end
 
 end

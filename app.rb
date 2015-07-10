@@ -53,7 +53,7 @@ post '/vouchers' do
     json @voucher
   else
     status 422
-    json @voucher.errors.to_json
+    json @voucher.errors
   end
 end
 
