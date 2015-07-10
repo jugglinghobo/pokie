@@ -10,6 +10,7 @@
   payload:
     a: b
     c: d
+    dani: RADI
   errors: {}
   id: 18
 - !ruby/object:Configuration

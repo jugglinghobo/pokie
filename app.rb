@@ -43,7 +43,7 @@ post '/save_configuration' do
   load_configurations
   @form = Form.new params
   @form.save
-  redirect "/?configuration_id=#{@form.id}"
+  redirect "/?id=#{@form.id}"
 end
 
 post '/vouchers' do
@@ -75,7 +75,7 @@ helpers do
 
   def load_configurations
     @configurations = Configuration.all
-    @configuration = Configuration.find_or_initialize params[:configuration_id]
+    @configuration = Configuration.find_or_initialize params[:id]
   end
 
 end

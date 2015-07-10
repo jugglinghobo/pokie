@@ -59,6 +59,10 @@ class Configuration
     Configuration.save_all
   end
 
+  def to_s
+    name
+  end
+
   def form_attributes
     attrs = attributes.dup
     attrs[:payload] = payload.to_json

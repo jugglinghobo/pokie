@@ -5,7 +5,7 @@
       <label for "configuration_select">Load Config:
       </span>
       <span>
-        <select name="configuration_id" id="configuration_select">
+        <select name="id" id="configuration_select">
           <option value=""></option>
           <% @configurations.each do |configuration| %>
             <option value=<%= configuration.id %> <%= "selected" if configuration == @configuration %>><%= configuration.name %></option>
