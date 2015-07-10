@@ -31,7 +31,9 @@ end
 post '/request' do
   load_configurations
   @form = Form.new params
-  @form.submit_request
+  if @form.valid?
+    @form.submit_request
+  end
   erb :index
 end
 

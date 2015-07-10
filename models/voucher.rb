@@ -35,7 +35,7 @@ class Voucher
   end
 
   def validate!
-    validated.each do |attr, value|
+    validated_attributes.each do |attr, value|
       if value.nil?
         errors[attr] = "must be present"
         return false
@@ -52,7 +52,7 @@ class Voucher
     ATTRIBUTES.inject({}) { |hash, attr| hash[attr] = self.send(attr); hash }
   end
 
-  def validated
+  def validated_attributes
     VALIDATED.inject({}) { |hash, attr| hash[attr] = self.send(attr); hash }
   end
 

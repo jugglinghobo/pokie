@@ -31,9 +31,9 @@ class Configuration
   end
 
   def initialize(attr = {})
+    @errors = {}
     attr = defaults.merge attr
     attr.each { |k, v| self.send("#{k}=", v) }
-    @errors = {}
   end
 
   def update_attributes(attr = {})
@@ -42,16 +42,12 @@ class Configuration
   end
 
   def save
-    if validate!
-      if self.id.nil?
-        self.id = DB.for_configuration
-        configurations << self
-      end
-      Configuration.save_all
-      self
-    else
-      false
+    if self.id.nil?
+      self.id = DB.for_configuration
+      configurations << self
     end
+    Configuration.save_all
+    self
   end
 
   def destroy
@@ -80,11 +76,9 @@ class Configuration
   end
 
   def validate!
-    attributes.each do |attr, value|
-      next if attr
+    validated_attributes.each do |attr, value|
       if value.nil?
         errors[attr] = "must be present"
-        return false
       end
     end
     errors.empty?
@@ -98,7 +92,7 @@ class Configuration
     ATTRIBUTES.inject({}) { |hash, attr| hash[attr] = self.send(attr); hash }
   end
 
-  def validated
+  def validated_attributes
     VALIDATED.inject({}) { |hash, attr| hash[attr] = self.send(attr); hash }
   end
 end

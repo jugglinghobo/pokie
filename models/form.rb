@@ -1,17 +1,21 @@
 class Form
-  attr_accessor :id, :name, :host, :endpoint, :method, :auth_enabled, :auth_user, :auth_pass, :payload, :response, :created_at, :updated_at
+  ATTRIBUTES = [:id, :name, :host, :endpoint, :method, :auth_enabled, :auth_user, :auth_pass, :payload, :response, :created_at, :updated_at, :errors]
+  VALIDATES = [:host, :endpoint, :method, :payload]
+  attr_accessor *ATTRIBUTES
   alias_method :auth_enabled?, :auth_enabled
 
   def initialize(hash = {})
+    @errors = {}
     hash.each { |k, v| send("#{k}=", v) }
   end
 
   def payload=(payload)
-    @payload = JSON.parse(payload)
-  end
-
-  def payload
-    @payload || {}
+    begin
+      @payload = JSON.parse(payload)
+    rescue
+      @payload = payload
+      errors[:payload] = "invalid JSON format"
+    end
   end
 
   def auth_enabled=(enabled)
@@ -55,6 +59,24 @@ class Form
 
   def post?
     method == "POST"
+  end
+
+  def validate!
+    validated_attributes.each do |attr, value|
+      if value.empty?
+        errors[attr] = "must be present"
+      end
+    end
+    errors.empty?
+  end
+
+  def valid?
+    validate!
+    errors.empty?
+  end
+
+  def validated_attributes
+    VALIDATES.inject({}) { |hash, attr| hash[attr] = self.send(attr); hash }
   end
 end
 

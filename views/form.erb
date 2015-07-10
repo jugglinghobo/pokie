@@ -6,14 +6,26 @@
       <input type="text" name="name" value="<%= @form.name %>">
     </li>
     <br \>
-    <li>
+    <li class="<%= "error" if @form.errors[:host] %>">
       <label for="host">Host:</label>
       <input type="text" name="host" value="<%=@form.host %>">
     </li>
-    <li>
+    <% if error = @form.errors[:host] %>
+      <li class="error">
+        <label></label>
+        <%= error %>
+      </li>
+    <% end %>
+    <li class="<%= "error" if @form.errors[:endpoint] %>">
       <label for="endpoint">Endpoint:</label>
       <input type="text" name="endpoint" value="<%=@form.endpoint%>">
     </li>
+    <% if error = @form.errors[:endpoint] %>
+      <li class="error">
+        <label></label>
+        <%= error %>
+      </li>
+    <% end %>
     <li>
       <label for="method">Method:</label>
       <span>
@@ -37,10 +49,16 @@
       <label>Auth pass:</label>
       <input type="text", name="auth_pass" value="<%= @form.auth_pass %>">
     </li>
-    <li>
+    <li class="<%= "error" if @form.errors[:payload] %>">
       <label for="payload">Payload:</label>
       <code><textarea autosize type="text" name="payload"><%= @form.payload.pretty %></textarea></code>
     </li>
+    <% if error = @form.errors[:payload] %>
+      <li class="error">
+        <label></label>
+        <%= error %>
+      </li>
+    <% end %>
     <li>
       <label for="submit_form"></label>
       <div class="actions inline">

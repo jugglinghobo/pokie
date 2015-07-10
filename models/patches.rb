@@ -10,3 +10,8 @@ class Array
   end
 end
 
+class String
+  def pretty
+    self
+  end
+end
