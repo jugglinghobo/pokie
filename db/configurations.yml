@@ -1,0 +1,29 @@
+---
+- !ruby/object:Configuration
+  name: ping
+  endpoint: "/api/v1/ping"
+  auth_enabled: true
+  auth_user: pokie
+  auth_pass: '12345'
+  host: http://localhost:3000
+  method: GET
+  payload:
+    a: b
+    c: d
+  errors: {}
+  id: 18
+- !ruby/object:Configuration
+  name: pokie POST voucher
+  endpoint: "/vouchers"
+  auth_enabled: true
+  auth_user: test-api
+  auth_pass: test-api
+  host: http://localhost:9393
+  method: POST
+  payload:
+    customer_id: 1
+    company_id: 1
+    amount: 123.45
+    currency: CHF
+  errors: {}
+  id: 19

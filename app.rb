@@ -5,9 +5,8 @@ require 'net/http'
 require 'uri'
 require 'json'
 require 'pry'
-require 'sinatra/activerecord'
 
-set :database, {adapter: "sqlite3", database: "dev.sqlite3"}
+set :root, File.dirname(__FILE__)
 set :auth_user, "test-api"
 set :auth_password, "test-api"
 
@@ -28,6 +27,7 @@ end
 get '/request' do
   redirect '/'
 end
+
 post '/request' do
   load_configurations
   @form = Form.new params
@@ -38,6 +38,7 @@ end
 get '/save_configuration' do
   redirect '/'
 end
+
 post '/save_configuration' do
   load_configurations
   @form = Form.new params
@@ -50,6 +51,7 @@ post '/vouchers' do
   params = JSON.parse(request.body.read)
   @voucher = Voucher.new params
   if @voucher.save
+    binding.pry
     json @voucher
   else
     status 422
@@ -74,7 +76,7 @@ helpers do
 
   def load_configurations
     @configurations = Configuration.all
-    @configuration = Configuration.find_or_initialize params["configuration_id"]
+    @configuration = Configuration.find_or_initialize params[:configuration_id]
   end
 
 end

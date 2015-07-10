@@ -1,15 +1,100 @@
-class Configuration < ActiveRecord::Base
+class Configuration
+  class << self
+    attr_accessor :configurations
+  end
 
-  serialize :payload, Hash
+  ROOT = Sinatra::Application.settings.root
+  FILENAME = File.expand_path("configurations.yml", "#{ROOT}/db")
+  self.configurations = YAML.load_file(FILENAME)
 
-  def self.find_or_initialize(id)
-    find_by_id(id) || new
+  ATTRIBUTES = [:id, :name, :host, :endpoint, :method, :payload, :auth_enabled, :auth_user, :auth_pass, :created_at, :updated_at]
+  VALIDATED = [:name, :host, :endpoint, :method, :payload, :auth_user, :auth_pass]
+  attr_accessor *ATTRIBUTES
+  attr_accessor :errors
+
+  class << self
+    def all
+      configurations || []
+    end
+
+    def find(id)
+      configurations.find { |c| c.id.to_s == id.to_s }
+    end
+
+    def find_or_initialize(id)
+      find(id) || new
+    end
+
+    def save_all
+      File.open(FILENAME, 'w') { |f| f.write(Configuration.all.to_yaml) }
+    end
+  end
+
+  def initialize(attr = {})
+    attr = defaults.merge attr
+    attr.each { |k, v| self.send("#{k}=", v) }
+    @errors = {}
+  end
+
+  def update_attributes(attr = {})
+    attr.each { |k, v| self.send("#{k}=", v) }
+    save
+  end
+
+  def save
+    if validate!
+      if self.id.nil?
+        self.id = DB.for_configuration
+        configurations << self
+      end
+      Configuration.save_all
+      self
+    else
+      false
+    end
+  end
+
+  def destroy
+    configurations.delete self
+    Configuration.save_all
   end
 
   def form_attributes
-    attrs = attributes
-    attrs["payload"] = payload.to_json
+    attrs = attributes.dup
+    attrs[:payload] = payload.to_json
     attrs
   end
 
+  private
+  def defaults
+    {
+      :host         => "http://localhost:3000",
+      :endpoint     => "/api/",
+      :method       => "GET",
+      :payload      => {},
+    }
+  end
+
+  def validate!
+    attributes.each do |attr, value|
+      next if attr
+      if value.nil?
+        errors[attr] = "must be present"
+        return false
+      end
+    end
+    errors.empty?
+  end
+
+  def configurations
+    self.class.configurations
+  end
+
+  def attributes
+    ATTRIBUTES.inject({}) { |hash, attr| hash[attr] = self.send(attr); hash }
+  end
+
+  def validated
+    VALIDATED.inject({}) { |hash, attr| hash[attr] = self.send(attr); hash }
+  end
 end

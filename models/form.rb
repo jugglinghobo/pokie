@@ -1,5 +1,5 @@
 class Form
-  attr_accessor :id, :name, :host, :endpoint, :method, :auth_enabled, :auth_user, :auth_pass, :payload, :response
+  attr_accessor :id, :name, :host, :endpoint, :method, :auth_enabled, :auth_user, :auth_pass, :payload, :response, :created_at, :updated_at
   alias_method :auth_enabled?, :auth_enabled
 
   def initialize(hash = {})
@@ -20,7 +20,7 @@ class Form
 
   def save
     configuration = Configuration.find_or_initialize id
-    configuration.update_attributes(
+    configuration = configuration.update_attributes(
       :name => name,
       :host => host,
       :endpoint => endpoint,
@@ -30,6 +30,7 @@ class Form
       :auth_pass => auth_pass,
       :payload => payload
     )
+    initialize(configuration.form_attributes)
   end
 
   def submit_request

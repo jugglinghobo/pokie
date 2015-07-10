@@ -1,5 +1,6 @@
 class Voucher
   ATTRIBUTES = [:id, :customer_id, :company_id, :amount, :currency, :number, :status, :created_at, :updated_at]
+  VALIDATED = ATTRIBUTES
 
   attr_accessor *ATTRIBUTES
   attr_accessor :errors
@@ -15,11 +16,11 @@ class Voucher
     validate!
   end
 
-  def as_json(options = {})
-    attributes.inject({}) do |hash, attr|
-      hash[attr] = self.send(attr)
+  def to_json(options = {})
+    attributes.inject({}) do |hash, (attr, value)|
+      hash[attr] = value
       hash
-    end
+    end.to_json
   end
 
   private
@@ -34,8 +35,8 @@ class Voucher
   end
 
   def validate!
-    attributes.each do |attr|
-      if self.send(attr).nil?
+    validated.each do |attr, value|
+      if value.nil?
         errors[attr] = "must be present"
         return false
       end
@@ -48,7 +49,11 @@ class Voucher
   end
 
   def attributes
-    ATTRIBUTES
+    ATTRIBUTES.inject({}) { |hash, attr| hash[attr] = self.send(attr); hash }
+  end
+
+  def validated
+    VALIDATED.inject({}) { |hash, attr| hash[attr] = self.send(attr); hash }
   end
 
 end
