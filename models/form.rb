@@ -43,6 +43,8 @@ class Form
       response = GetRequest.new(self).submit
     when "POST"
       response = PostRequest.new(self).submit
+    when "PATCH"
+      response = PatchRequest.new(self).submit
     else
       raise "Method Not Supported"
     end

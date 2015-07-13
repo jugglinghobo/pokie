@@ -39,3 +39,11 @@ class PostRequest < APIRequest
   end
 end
 
+class PatchRequest < APIRequest
+  def request
+    req = Net::HTTP::Patch.new(uri.request_uri)
+    req.body = form.payload.to_json
+    req['Content-Type'] = 'application/json'
+    req
+  end
+end
