@@ -23,6 +23,35 @@
     customer_id: 1
     company_id: 2
     amount: 123.31
-    currency: USD
+    currency: CHF
   errors: {}
   id: 25
+- !ruby/object:Configuration
+  name: create voucher
+  endpoint: "/api/v1/vouchers"
+  auth_enabled: true
+  auth_user: pokie
+  auth_pass: '12345'
+  host: http://localhost:3000
+  method: POST
+  payload:
+    customer_id: 1
+    company_id: 1
+    amount: 200.25
+    currency: USD
+    number: XJiX 12-AB
+    status: generated
+  errors: {}
+  id: 27
+- !ruby/object:Configuration
+  name: update voucher
+  endpoint: "/api/vouchers/update"
+  auth_enabled: true
+  auth_user: pokie
+  auth_pass: '12345'
+  host: http://localhost:3000
+  method: PATCH
+  payload:
+    status: cashed
+  errors: {}
+  id: 28

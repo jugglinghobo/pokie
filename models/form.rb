@@ -61,6 +61,10 @@ class Form
     method == "POST"
   end
 
+  def patch?
+    method == "PATCH"
+  end
+
   def validate!(options = {})
     validated_attributes.each do |attr, value|
       if value.empty?

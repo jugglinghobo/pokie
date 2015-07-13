@@ -42,6 +42,10 @@
         <span>POST</span>
         <span><input type="radio" name="method" value="POST" <%= 'checked' if @form.post? %>></span>
       </span>
+      <span>
+        <span>PATCH</span>
+        <span><input type="radio" name="method" value="PATCH" <%= 'checked' if @form.patch? %>></span>
+      </span>
     </li>
     <li>
       <label>Enable Auth?</label>
