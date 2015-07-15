@@ -12,7 +12,7 @@ You can also remove `.ruby-version` and `.ruby-gemset` and create a gemset manua
 install gems: `bundle` (if bundler not available: `gem install bundler`)
 
 ### usage
-You can run the app with `ruby app.rb`, and open http://localhost:4567 to see the interface.
+You can run the app with `ruby app.rb`, and open [http://localhost:4567](http://localhost:4567) to see the interface.
 
 On the left side, you can load existing configurations, or manually enter your own.
 On submit, a JSON request will be made according to your parameters.
