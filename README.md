@@ -19,4 +19,5 @@ On submit, a JSON request will be made according to your parameters.
 The result of this request will be displayed on the right side.
 
 __Currently, there's no error handling.__
+
 If something goes wrong, click the back button and adjust your parameters.
