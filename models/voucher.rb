@@ -17,10 +17,10 @@ class Voucher
   end
 
   def to_json(options = {})
-    attributes.inject({}) do |hash, (attr, value)|
-      hash[attr] = value
-      hash
-    end.to_json
+    attr = attributes
+    attr.delete :created_at
+    attr.delete :updated_at
+    attr.to_json options
   end
 
   private
